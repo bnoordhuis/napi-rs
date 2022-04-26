@@ -12,6 +12,18 @@ fn get_cwd<T: Fn(String) -> Result<()>>(callback: T) {
 }
 
 #[napi]
+fn get_cwd_function<T: Fn(String) -> Result<f64>, F: Fn(u32) -> Result<f64>>(
+  callback: Function<T>,
+  input: u32,
+  callback2: Function<F>,
+) -> Result<f64> {
+  Ok(
+    callback.call(env::current_dir().unwrap().to_string_lossy().to_string())?
+      + callback2.call(input)?,
+  )
+}
+
+#[napi]
 fn option_end<T: Fn(String, Option<String>) -> Result<()>>(callback: T) {
   callback("Hello".to_string(), None).unwrap();
 }
